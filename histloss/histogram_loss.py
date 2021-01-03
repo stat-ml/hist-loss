@@ -70,7 +70,7 @@ class InvHistogramLoss(BaseHistLoss):
         
         pos_hist = self.compute_histogram(positive)
         neg_hist = self.compute_histogram(negative)
-        neg_inv_cum = self.inv_cumsum(neg_hist, 0) 
+        neg_inv_cum = inv_cumsum(neg_hist, 0) 
 
         inv_hist_loss = (pos_hist * neg_inv_cum).sum()
         std_loss = self.std_loss(positive, negative)
@@ -107,7 +107,7 @@ class BiHistogramLoss(BaseHistLoss):
         pos_hist = self.compute_histogram(positive) # h_pos
         pos_cum = torch.cumsum(pos_hist, 0)
         neg_hist = self.compute_histogram(negative) # h_neg
-        neg_inv_cum = self.inv_cumsum(neg_hist, 0) 
+        neg_inv_cum = inv_cumsum(neg_hist, 0) 
 
         hist_loss = (neg_hist * pos_cum).sum()
         inv_hist_loss = (pos_hist * neg_inv_cum).sum()
