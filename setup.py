@@ -9,7 +9,7 @@ def load_requirements(filename):
 
 setuptools.setup(
     name="hist-loss",
-    version="0.0.1",
+    version="0.0.2",
     author="Maxim Panov and Nikita Mokrov and Roman Lisov",
     author_email="nikita.mokrov@skoltech.ru",
     description="Package with losses for distribution learning",
