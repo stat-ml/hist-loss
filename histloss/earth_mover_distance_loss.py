@@ -23,7 +23,7 @@ class EarthMoverDistanceLoss(BaseHistLoss):
         >>> loss = criterion(positive, negative)
         >>> loss.backward()
     """
-    def __init__(self, bins=128, min_val=-1, max_val=1, alpha=0, method='sim'):
+    def __init__(self, bins=128, min_val=-1, max_val=1, alpha=0, method='asim'):
         super(EarthMoverDistanceLoss, self).__init__(bins, min_val, max_val, alpha)
         if method not in {'sim', 'asim'}:
             raise NotImplementedError(f'Undefined method of EMD Loss: {method}')
