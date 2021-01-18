@@ -3,13 +3,15 @@ import setuptools
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
+from histloss import __version__
+
 def load_requirements(filename):
     with open(os.path.join(PROJECT_ROOT, filename), "r") as f:
         return f.read().splitlines()
 
 setuptools.setup(
     name="hist-loss",
-    version="0.0.2",
+    version=__version__,
     author="Maxim Panov and Nikita Mokrov and Roman Lisov",
     author_email="nikita.mokrov@skoltech.ru",
     description="Package with losses for distribution learning",
