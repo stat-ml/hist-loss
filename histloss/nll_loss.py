@@ -1,4 +1,6 @@
 import torch
+from histloss.base_hist_loss import BaseHistLoss
+from histloss.utils import norm_min_max_distributuions
 
 class NLLLoss(torch.nn.Module):
     """
@@ -18,3 +20,4 @@ class NLLLoss(torch.nn.Module):
         neg_loss = -torch.log(1 - negative + self.eps).mean()
         loss = pos_loss + neg_loss
         return loss
+    

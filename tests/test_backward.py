@@ -3,7 +3,9 @@ from histloss import (
     InvHistogramLoss,
     BiHistogramLoss,
     EarthMoverDistanceLoss,
-    NLLLoss
+    NLLLoss,
+    BinomialDevianceLoss,
+    ContinuousHistogramLoss
 )
 
 import pytest
@@ -31,3 +33,14 @@ def test_EarthMoverDistanceLoss():
 
 def test_NLLLoss():
     return _test_loss("NLLLoss")
+
+def test_BinomialDevianceLoss():
+    return _test_loss("BinomialDevianceLoss")
+
+def test_ContinuousHistogramLoss():
+    criterion = ContinuousHistogramLoss()
+    criterion = ContinuousHistogramLoss()
+    distance = torch.rand(30, requires_grad=True)
+    similarity = torch.randint(low=0, high=3, size=(30,))
+    loss = criterion(distance, similarity)
+    loss.backward()
