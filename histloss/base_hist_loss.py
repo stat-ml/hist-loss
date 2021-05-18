@@ -1,6 +1,6 @@
 import torch
 from abc import *
-from .utils import triangular_histogram_with_linear_slope
+from histloss.utils import triangular_histogram_with_linear_slope
 
 class BaseHistLoss(torch.nn.Module, ABC):
     """

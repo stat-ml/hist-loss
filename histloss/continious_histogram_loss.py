@@ -1,5 +1,5 @@
 import torch
-from .base_hist_loss import BaseHistLoss
+from histloss.base_hist_loss import BaseHistLoss
 
 class ContinuousHistogramLoss(BaseHistLoss):
     """
@@ -12,15 +12,15 @@ class ContinuousHistogramLoss(BaseHistLoss):
         alpha (float, optional): parameter for regularization. Default: `0`
 
     Shape:
-        - positive: set of positive points, (N, *)
-        - negative: set of negative points, (M, *)
+        - distance: contain predicted distance from model, (N, *)
+        - similarity: contain real distance from data, (N, *)
         - loss: scalar
 
     Examples::
-        >>> criterion = HistogramLoss()
-        >>> positive = torch.sigmoid(torch.randn(10, requires_grad=True))
-        >>> negative = torch.sigmoid(torch.randn(10, requires_grad=True))
-        >>> loss = criterion(positive, negative)
+        >>> criterion = ContinuousHistogramLoss()
+        >>> distance = torch.rand(100, requires_grad=True)
+        >>> similarity = torch.randint(low=0, high=5, size=(100,))
+        >>> loss = criterion(distance, similarity)
         >>> loss.backward()
 
     Reference:

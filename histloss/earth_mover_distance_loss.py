@@ -1,6 +1,6 @@
 import torch
-from .base_hist_loss import BaseHistLoss
-from .utils import norm_min_max_distributuions
+from histloss.base_hist_loss import BaseHistLoss
+from histloss.utils import norm_min_max_distributuions
 
 class EarthMoverDistanceLoss(BaseHistLoss):
     """
