@@ -1,6 +1,5 @@
 import torch
 from .base_hist_loss import BaseHistLoss
-from .utils import inv_cumsum
 
 class ContinuousHistogramLoss(BaseHistLoss):
     """
@@ -55,10 +54,8 @@ class ContinuousHistogramLoss(BaseHistLoss):
             if mask.sum() == 0:
                 continue
             else:
-                # print(f'In {i}: ', torch.unique(similarity[mask]))
                 hist_i = self.compute_histogram(distance[mask])
                 hists.append(hist_i)
-
                 std_loss += self.std_loss(distance[mask])
 
         hists = torch.stack(hists) # h_rz

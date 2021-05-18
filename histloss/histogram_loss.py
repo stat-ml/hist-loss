@@ -1,6 +1,6 @@
 import torch
 from .base_hist_loss import BaseHistLoss
-from .utils import inv_cumsum
+from .utils import norm_min_max_distributuions
 
 class HistogramLoss(BaseHistLoss):
     """
@@ -30,6 +30,7 @@ class HistogramLoss(BaseHistLoss):
     """
     def forward(self, positive, negative):
         self.t = self.t.to(device=positive.device)
+        positive, negative = norm_min_max_distributuions(positive, negative)
         
         pos_hist = self.compute_histogram(positive) # h_pos
         neg_hist = self.compute_histogram(negative) # h_neg
@@ -37,7 +38,7 @@ class HistogramLoss(BaseHistLoss):
 
         hist_loss = (neg_hist * pos_cum).sum() # 4 equation of the paper
         # Not in the article, own improvements
-        std_loss = self.std_loss(positive, negative)
+        std_loss = self.std_loss(pos_hist, neg_hist)
 
         loss = hist_loss + std_loss
         return loss
@@ -67,13 +68,14 @@ class InvHistogramLoss(BaseHistLoss):
     """
     def forward(self, positive, negative):
         self.t = self.t.to(device=positive.device)
-        
+        positive, negative = norm_min_max_distributuions(positive, negative)
+
         pos_hist = self.compute_histogram(positive)
         neg_hist = self.compute_histogram(negative)
-        neg_inv_cum = inv_cumsum(neg_hist, 0) 
+        neg_inv_cum = neg_hist.flip(0).cumsum(0).flip(0)
 
         inv_hist_loss = (pos_hist * neg_inv_cum).sum()
-        std_loss = self.std_loss(positive, negative)
+        std_loss = self.std_loss(pos_hist, neg_hist)
 
         loss = inv_hist_loss + std_loss
         return loss
@@ -103,15 +105,16 @@ class BiHistogramLoss(BaseHistLoss):
     """
     def forward(self, positive, negative):
         self.t = self.t.to(device=positive.device)
+        positive, negative = norm_min_max_distributuions(positive, negative)
         
         pos_hist = self.compute_histogram(positive) # h_pos
         pos_cum = torch.cumsum(pos_hist, 0)
         neg_hist = self.compute_histogram(negative) # h_neg
-        neg_inv_cum = inv_cumsum(neg_hist, 0) 
+        neg_inv_cum = neg_hist.flip(0).cumsum(0).flip(0)
 
         hist_loss = (neg_hist * pos_cum).sum()
         inv_hist_loss = (pos_hist * neg_inv_cum).sum()
-        std_loss = self.std_loss(positive, negative)
+        std_loss = self.std_loss(pos_hist, neg_hist)
         
         loss = hist_loss + inv_hist_loss + std_loss
         return loss

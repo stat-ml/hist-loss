@@ -1,5 +1,6 @@
 import torch
 from .base_hist_loss import BaseHistLoss
+from .utils import norm_min_max_distributuions
 
 class EarthMoverDistanceLoss(BaseHistLoss):
     """
@@ -31,16 +32,18 @@ class EarthMoverDistanceLoss(BaseHistLoss):
 
     def forward(self, positive, negative):
         self.t = self.t.to(device=positive.device)
+        positive, negative = norm_min_max_distributuions(positive, negative)
         
+        negative_aug = negative[negative > (self.max_val - self.min_val) / 2]
         pos_hist = self.compute_histogram(positive) # h_pos
-        neg_hist = self.compute_histogram(negative) # h_neg
+        neg_hist = self.compute_histogram(negative_aug) # h_neg
         
         if self.method == 'sim':
             emd_loss = - (torch.abs(torch.cumsum(neg_hist - pos_hist, 0))).sum()
         elif self.method == 'asim':
             emd_loss = (torch.cumsum(pos_hist - neg_hist, 0)).sum()
 
-        std_loss = self.std_loss(positive, negative)
+        std_loss = self.std_loss(pos_hist, neg_hist)
 
         loss = emd_loss + std_loss
         return loss

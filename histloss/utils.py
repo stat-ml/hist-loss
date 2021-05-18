@@ -24,15 +24,6 @@ def triangular_histogram_with_linear_slope(inputs, t, delta):
 
     return torch.add(a, b)
 
-def inv_cumsum(t, dim=0):
-    """ 
-    Ordindary cumulative sum: c_i = \sum_{j=1}^{i} x_j
-    Inverse cumulative sum: c_i = \sum_{j=i}^{n} x_j
-    """
-    flip_t = torch.flip(t, [dim])
-    flip_cumsum = torch.cumsum(torch.cumsum(flip_t, dim), dim)
-    inv_cumsum = torch.flip(flip_cumsum, [dim])
-    return inv_cumsum
 
 def norm_min_max_distributuions(*distributuions):
     max_ = max(torch.max(d.data) for d in distributuions)
