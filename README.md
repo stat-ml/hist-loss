@@ -24,7 +24,9 @@ python setup.py install
 ```
 
 ### Pip Installation
-Coming soon ...
+```
+pip install hist-loss
+```
 
 
 ## Example of usage
