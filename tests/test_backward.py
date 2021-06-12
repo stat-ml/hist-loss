@@ -41,6 +41,6 @@ def test_ContinuousHistogramLoss():
     criterion = ContinuousHistogramLoss()
     criterion = ContinuousHistogramLoss()
     distance = torch.rand(30, requires_grad=True)
-    similarity = torch.randint(low=0, high=3, size=(30,))
+    similarity = torch.randint(low=0, high=3, size=(30,)).to(torch.float)
     loss = criterion(distance, similarity)
     loss.backward()
