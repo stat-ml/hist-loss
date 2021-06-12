@@ -7,7 +7,7 @@ This library contains implementations of some histogram-based loss functions:
 - Histgramm Loss ([paper](https://arxiv.org/pdf/1611.00822.pdf), [original code](https://github.com/madkn/HistogramLoss))
 - Inverse Histogram Loss (our impovements)
 - Bidirectinal Histogramm Loss (our impovements)
-- Continuous Histogram Loss [paper](https://arxiv.org/pdf/2004.02830v1.pdf)
+- Continuous Histogram Loss ([paper](https://arxiv.org/pdf/2004.02830v1.pdf))
 
 Also there are implementations of another losses to compare:
 - Negative Log-Likelihood
