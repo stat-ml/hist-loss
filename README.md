@@ -1,4 +1,7 @@
+
+[![PyPI version fury.io](https://badge.fury.io/py/ansicolortags.svg)](https://pypi.org/project/hist-loss/)
 [![Build Status](https://travis-ci.com/stat-ml/histloss.svg?token=oPGnutpqNa9oAaMSKt7n&branch=main)](https://travis-ci.com/stat-ml/histloss)
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/stat-ml/histloss/blob/main/LICENSE)
 
 # Histogram Based Losses
 
