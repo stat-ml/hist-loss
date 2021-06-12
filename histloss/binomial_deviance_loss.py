@@ -1,6 +1,7 @@
 import torch
+from torch import nn, Tensor
 
-class BinomialDevianceLoss(torch.nn.Module):
+class BinomialDevianceLoss(nn.Module):
     """
     Args:
         C (int, optional): asymmetric negative cost. Default: `10`
@@ -23,13 +24,13 @@ class BinomialDevianceLoss(torch.nn.Module):
         Deep Metric Learning for Practical Person Re-Identification
         https://arxiv.org/pdf/1407.4979.pdf
     """
-    def __init__(self, C=10, alpha=2, beta=0.5):
+    def __init__(self, C: float = 10, alpha: float = 2, beta: float = 0.5):
         super(BinomialDevianceLoss, self).__init__()
         self.C = C
         self.alpha = alpha
         self.beta = beta
 
-    def forward(self, positive, negative):
+    def forward(self, positive: Tensor, negative: Tensor):
         loss_pos = (torch.log(torch.exp( -self.alpha * (positive - self.beta)) + 1)).mean()
         loss_neg = (torch.log(torch.exp(self.C * self.alpha * (negative - self.beta)) + 1)).mean()
         loss = loss_neg + loss_pos

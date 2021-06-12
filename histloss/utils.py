@@ -1,6 +1,7 @@
 import torch
+from torch import Tensor
 
-def triangular_histogram_with_linear_slope(inputs, t, delta):
+def triangular_histogram_with_linear_slope(inputs: Tensor, t: Tensor, delta: float):
     """
     Function that calculates a histogram from an article
     [Learning Deep Embeddings with Histogram Loss](https://arxiv.org/pdf/1611.00822.pdf)
@@ -25,7 +26,7 @@ def triangular_histogram_with_linear_slope(inputs, t, delta):
     return torch.add(a, b)
 
 
-def norm_min_max_distributuions(*distributuions):
+def norm_min_max_distributuions(*distributuions: Tensor):
     max_ = max(torch.max(d.data) for d in distributuions)
     min_ = min(torch.min(d.data) for d in distributuions)
 

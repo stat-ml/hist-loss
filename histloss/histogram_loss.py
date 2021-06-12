@@ -1,4 +1,5 @@
 import torch
+from torch import Tensor
 from histloss.base_hist_loss import BaseHistLoss
 from histloss.utils import norm_min_max_distributuions
 
@@ -28,7 +29,7 @@ class HistogramLoss(BaseHistLoss):
         E. Ustinova and V. Lempitsky: Learning Deep Embeddings with Histogram Loss:
         https://arxiv.org/pdf/1611.00822.pdf
     """
-    def forward(self, positive, negative):
+    def forward(self, positive: Tensor, negative: Tensor):
         self.t = self.t.to(device=positive.device)
         positive, negative = norm_min_max_distributuions(positive, negative)
         
@@ -38,7 +39,7 @@ class HistogramLoss(BaseHistLoss):
 
         hist_loss = (neg_hist * pos_cum).sum() # 4 equation of the paper
         # Not in the article, own improvements
-        std_loss = self.std_loss(pos_hist, neg_hist)
+        std_loss = self.std_loss(positive, negative)
 
         loss = hist_loss + std_loss
         return loss
@@ -66,7 +67,7 @@ class InvHistogramLoss(BaseHistLoss):
         >>> loss = criterion(positive, negative)
         >>> loss.backward()
     """
-    def forward(self, positive, negative):
+    def forward(self, positive: Tensor, negative: Tensor):
         self.t = self.t.to(device=positive.device)
         positive, negative = norm_min_max_distributuions(positive, negative)
 
@@ -75,7 +76,7 @@ class InvHistogramLoss(BaseHistLoss):
         neg_inv_cum = neg_hist.flip(0).cumsum(0).flip(0)
 
         inv_hist_loss = (pos_hist * neg_inv_cum).sum()
-        std_loss = self.std_loss(pos_hist, neg_hist)
+        std_loss = self.std_loss(positive, negative)
 
         loss = inv_hist_loss + std_loss
         return loss
@@ -103,7 +104,7 @@ class BiHistogramLoss(BaseHistLoss):
         >>> loss = criterion(positive, negative)
         >>> loss.backward()
     """
-    def forward(self, positive, negative):
+    def forward(self, positive: Tensor, negative: Tensor):
         self.t = self.t.to(device=positive.device)
         positive, negative = norm_min_max_distributuions(positive, negative)
         
@@ -114,7 +115,7 @@ class BiHistogramLoss(BaseHistLoss):
 
         hist_loss = (neg_hist * pos_cum).sum()
         inv_hist_loss = (pos_hist * neg_inv_cum).sum()
-        std_loss = self.std_loss(pos_hist, neg_hist)
+        std_loss = self.std_loss(positive, negative)
         
         loss = hist_loss + inv_hist_loss + std_loss
         return loss

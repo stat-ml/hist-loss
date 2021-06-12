@@ -1,5 +1,7 @@
 import torch
+from torch import Tensor
 from histloss.base_hist_loss import BaseHistLoss
+from histloss.utils import norm_min_max_distributuions
 
 class ContinuousHistogramLoss(BaseHistLoss):
     """
@@ -7,8 +9,6 @@ class ContinuousHistogramLoss(BaseHistLoss):
 
     Args:
         bins (int, optional): .Default: `10`
-        min_val (float, optional): Default: `-1`
-        max_val (float, optional): Default: `1`
         alpha (float, optional): parameter for regularization. Default: `0`
 
     Shape:
@@ -19,7 +19,7 @@ class ContinuousHistogramLoss(BaseHistLoss):
     Examples::
         >>> criterion = ContinuousHistogramLoss()
         >>> distance = torch.rand(100, requires_grad=True)
-        >>> similarity = torch.randint(low=0, high=5, size=(100,))
+        >>> similarity = torch.randint(low=0, high=5, size=(100,)).to(torch.float)
         >>> loss = criterion(distance, similarity)
         >>> loss.backward()
 
@@ -27,25 +27,22 @@ class ContinuousHistogramLoss(BaseHistLoss):
         CONTINUOUS HISTOGRAM LOSS: BEYOND NEURAL SIMILARITY
         https://arxiv.org/pdf/2004.02830v1.pdf
     """
-    def __init__(self, bins=128, min_val=0, max_val=1, bins_similarity=3, alpha=0):
-        super(BaseHistLoss, self).__init__()
-        # distance
-        self.bins = bins
-        self.max_val = max_val
-        self.min_val = min_val
-        self.alpha = alpha
-        
-        self.delta = (self.max_val - self.min_val) / (bins - 1)
-        self.t = torch.arange(self.min_val, self.max_val + self.delta, step=self.delta)
+    def __init__(self, bins: int = 128, bins_similarity: int = 3, alpha: float = 0):
+        super(ContinuousHistogramLoss, self).__init__(bins=bins, alpha=alpha)
 
         # similarity
+        if bins_similarity < 1:
+            raise ValueError(
+                f'Number of bins for similarity must be grather than 1: {bins_similarity}'
+            )
+        
         self.bins_similarity = bins_similarity
         self.delta_z = 1. / (bins_similarity - 1)
         self.dz = 0.5
 
-    def forward(self, distance, similarity):
+    def forward(self, distance: Tensor, similarity: Tensor):
         self.t = self.t.to(device=distance.device)
-        distance = (distance - min(distance.data)) / (max(distance.data) - min(distance.data))
+        distance, = norm_min_max_distributuions(distance)
                 
         hists = []
         std_loss = 0

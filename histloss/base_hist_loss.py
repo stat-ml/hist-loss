@@ -1,15 +1,14 @@
 import torch
-from abc import *
-from histloss.utils import triangular_histogram_with_linear_slope
+from torch import nn, Tensor
+from abc import ABC, abstractmethod
+from histloss.utils import triangular_histogram_with_linear_slope, norm_min_max_distributuions
 
-class BaseHistLoss(torch.nn.Module, ABC):
+class BaseHistLoss(nn.Module, ABC):
     """
     Base class for all Loss with histograms
 
     Args:
         bins (int, optional): .Default: `128`
-        min_val (float, optional): Default: `-1`
-        max_val (float, optional): Default: `1`
         alpha (float, optional): parameter for regularization. Default: `0`
 
     Shape:
@@ -18,24 +17,25 @@ class BaseHistLoss(torch.nn.Module, ABC):
         - output: scalar
     
     """
-    def __init__(self, bins=128, min_val=-1, max_val=1, alpha=0):
+    def __init__(self, bins: int = 128, alpha: float = 0):
         super(BaseHistLoss, self).__init__()
         self.bins = bins
-        self.max_val = max_val
-        self.min_val = min_val
+        self._max_val = 1
+        self._min_val = 0
         self.alpha = alpha
         
-        self.delta = (self.max_val - self.min_val) / (bins - 1)
-        self.t = torch.arange(self.min_val, self.max_val + self.delta, step=self.delta)
+        self.delta = (self._max_val - self._min_val) / (bins - 1)
+        self.t = torch.arange(self._min_val, self._max_val + self.delta, step=self.delta)
     
-    def compute_histogram(self, inputs):
+    def compute_histogram(self, inputs: Tensor):
         return triangular_histogram_with_linear_slope(inputs, self.t, self.delta)
 
     @abstractmethod
-    def forward(self, positive, negative):
+    def forward(self, positive: Tensor, negative: Tensor):
+        positive, negative = norm_min_max_distributuions(positive, negative)
         pass
 
-    def std_loss(self, *inputs):
+    def std_loss(self, *inputs: Tensor):
         if self.alpha > 0:
             std_loss = self.alpha * sum(i.std() for i in inputs)
         else:
