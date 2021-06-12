@@ -21,7 +21,7 @@ Also there are implementations of another losses to compare:
 ### Installation from source
 The instalation directly from this repository:
 ```
-https://github.com/stat-ml/histloss.git
+https://github.com/stat-ml/hist-loss.git
 cd histloss
 python setup.py install
 ```
