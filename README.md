@@ -31,13 +31,12 @@ python setup.py install
 pip install hist-loss
 ```
 
-
 ## Example of usage
 
 ```Python
->>> criterion = HistogramLoss()
->>> positive = torch.sigmoid(torch.randn(10, requires_grad=True))
->>> negative = torch.sigmoid(torch.randn(10, requires_grad=True))
->>> loss = criterion(positive, negative)
->>> loss.backward()
+criterion = HistogramLoss()
+positive = torch.sigmoid(torch.randn(10, requires_grad=True))
+negative = torch.sigmoid(torch.randn(10, requires_grad=True))
+loss = criterion(positive, negative)
+loss.backward()
 ```
