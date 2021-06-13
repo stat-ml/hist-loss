@@ -1,7 +1,7 @@
 
 [![PyPI version](https://badge.fury.io/py/hist-loss.svg)](https://badge.fury.io/py/hist-loss)
 [![Build Status](https://travis-ci.com/stat-ml/histloss.svg?token=oPGnutpqNa9oAaMSKt7n&branch=main)](https://travis-ci.com/stat-ml/histloss)
-[![PyPI version fury.io](https://badge.fury.io/py/hist-loss.svg)](https://pypi.python.org/pypi/hist-loss/)
+[![PyPI license](https://img.shields.io/pypi/l/hist-loss.svg)](https://pypi.python.org/pypi/hist-loss/)
 
 # Histogram Based Losses
 
