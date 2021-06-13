@@ -3,6 +3,7 @@ from torch import Tensor
 from histloss.base_hist_loss import BaseHistLoss
 from histloss.utils import norm_min_max_distributuions
 
+
 class EarthMoverDistanceLoss(BaseHistLoss):
     """
     EarthMoverDistanceLoss
@@ -39,8 +40,8 @@ class EarthMoverDistanceLoss(BaseHistLoss):
         
         if self.cut_negative:
             negative = negative[negative > (self._max_val - self._min_val) / 2]
-        pos_hist = self.compute_histogram(positive) # h_pos
-        neg_hist = self.compute_histogram(negative) # h_neg
+        pos_hist = self.compute_histogram(positive)  # h_pos
+        neg_hist = self.compute_histogram(negative)  # h_neg
         
         if self.method == 'sim':
             emd_loss = - (torch.abs(torch.cumsum(neg_hist - pos_hist, 0))).sum()
@@ -51,4 +52,3 @@ class EarthMoverDistanceLoss(BaseHistLoss):
 
         loss = emd_loss + std_loss
         return loss
-    

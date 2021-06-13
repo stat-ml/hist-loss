@@ -3,6 +3,7 @@ from torch import Tensor
 from histloss.base_hist_loss import BaseHistLoss
 from histloss.utils import norm_min_max_distributuions
 
+
 class ContinuousHistogramLoss(BaseHistLoss):
     """
     Histogram Loss
@@ -35,7 +36,7 @@ class ContinuousHistogramLoss(BaseHistLoss):
             raise ValueError(
                 f'Number of bins for similarity must be grather than 1: {bins_similarity}'
             )
-        
+
         self.bins_similarity = bins_similarity
         self.delta_z = 1. / (bins_similarity - 1)
         self.dz = 0.5
@@ -43,7 +44,7 @@ class ContinuousHistogramLoss(BaseHistLoss):
     def forward(self, distance: Tensor, similarity: Tensor):
         self.t = self.t.to(device=distance.device)
         distance, = norm_min_max_distributuions(distance)
-                
+
         hists = []
         std_loss = 0
         for i in range(self.bins_similarity + 1):
@@ -55,14 +56,14 @@ class ContinuousHistogramLoss(BaseHistLoss):
                 hists.append(hist_i)
                 std_loss += self.std_loss(distance[mask])
 
-        hists = torch.stack(hists) # h_rz
-        phi = self.inv_cumsum_with_shift(hists) # phi_rz
+        hists = torch.stack(hists)  # h_rz
+        phi = self.inv_cumsum_with_shift(hists)  # phi_rz
 
-        continuous_hist_loss = (hists * phi).sum() # last equation of the paper
+        continuous_hist_loss = (hists * phi).sum()  # last equation of the paper
         loss = continuous_hist_loss + std_loss
-        
+
         return loss
-    
+
     @staticmethod
     def inv_cumsum_with_shift(t):
         """
@@ -70,9 +71,9 @@ class ContinuousHistogramLoss(BaseHistLoss):
         """
         flip_t = torch.flip(t, [0])
         flip_cumsum = torch.cumsum(torch.cumsum(flip_t, 1), 0)
-        
+
         cumsum = torch.flip(flip_cumsum, [0])
         zero_raw = torch.zeros_like(cumsum[-1:])
         cumsum_with_shift = torch.cat([cumsum[1:], zero_raw])
-        
+
         return cumsum_with_shift

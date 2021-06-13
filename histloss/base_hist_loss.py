@@ -1,7 +1,11 @@
 import torch
 from torch import nn, Tensor
 from abc import ABC, abstractmethod
-from histloss.utils import triangular_histogram_with_linear_slope, norm_min_max_distributuions
+from histloss.utils import (
+    triangular_histogram_with_linear_slope,
+    norm_min_max_distributuions
+)
+
 
 class BaseHistLoss(nn.Module, ABC):
     """
@@ -15,7 +19,6 @@ class BaseHistLoss(nn.Module, ABC):
         - pos_input: set of positive points, (N, *)
         - neg_input: set of negative points, (M, *)
         - output: scalar
-    
     """
     def __init__(self, bins: int = 128, alpha: float = 0):
         super(BaseHistLoss, self).__init__()
@@ -23,11 +26,10 @@ class BaseHistLoss(nn.Module, ABC):
         self._max_val = 1
         self._min_val = 0
         self.alpha = alpha
-        
         self.delta = (self._max_val - self._min_val) / (bins - 1)
         self.t = torch.arange(self._min_val, self._max_val + self.delta, step=self.delta)
-    
-    def compute_histogram(self, inputs: Tensor):
+
+    def compute_histogram(self, inputs: Tensor) -> Tensor:
         return triangular_histogram_with_linear_slope(inputs, self.t, self.delta)
 
     @abstractmethod
@@ -40,5 +42,5 @@ class BaseHistLoss(nn.Module, ABC):
             std_loss = self.alpha * sum(i.std() for i in inputs)
         else:
             # In order not to waste time compute unnecessary stds
-            std_loss = 0 
+            std_loss = 0
         return std_loss

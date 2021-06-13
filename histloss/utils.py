@@ -1,6 +1,7 @@
 import torch
 from torch import Tensor
 
+
 def triangular_histogram_with_linear_slope(inputs: Tensor, t: Tensor, delta: float):
     """
     Function that calculates a histogram from an article
@@ -15,13 +16,13 @@ def triangular_histogram_with_linear_slope(inputs: Tensor, t: Tensor, delta: flo
     x = inputs.unsqueeze(0) - t.unsqueeze(1) + delta
     m = torch.zeros_like(x)
     m[(0 <= x) & (x <= delta)] = 1
-    a = torch.sum(x * m, dim=1) / ( delta * len(inputs))
+    a = torch.sum(x * m, dim=1) / (delta * len(inputs))
 
     # second condition of the second equation of the paper
     x = t.unsqueeze(0) - inputs.unsqueeze(1) + delta
     m = torch.zeros_like(x)
     m[(0 <= x) & (x <= delta)] = 1
-    b = torch.sum(x * m, dim=0) / ( delta * len(inputs))
+    b = torch.sum(x * m, dim=0) / (delta * len(inputs))
 
     return torch.add(a, b)
 

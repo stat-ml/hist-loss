@@ -1,6 +1,7 @@
 import torch
 from torch import nn, Tensor
 
+
 class BinomialDevianceLoss(nn.Module):
     """
     Args:
@@ -31,7 +32,7 @@ class BinomialDevianceLoss(nn.Module):
         self.beta = beta
 
     def forward(self, positive: Tensor, negative: Tensor):
-        loss_pos = (torch.log(torch.exp( -self.alpha * (positive - self.beta)) + 1)).mean()
+        loss_pos = (torch.log(torch.exp(- self.alpha * (positive - self.beta)) + 1)).mean()
         loss_neg = (torch.log(torch.exp(self.C * self.alpha * (negative - self.beta)) + 1)).mean()
         loss = loss_neg + loss_pos
         return loss
