@@ -35,3 +35,6 @@ venv.bak/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+
+# UI
+.vscode/
